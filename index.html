@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Cronograma Banco do Brasil</title>
+<style>
+  :root {
+    --bg-color: #f1f8ff;
+    --text-color: #000;
+    --card-color: #fff;
+    --primary-color: #1565c0;
+    --done-color: #c8e6c9;
+  }
+  body.dark {
+    --bg-color: #121212;
+    --text-color: #eee;
+    --card-color: #1e1e1e;
+    --primary-color: #90caf9;
+    --done-color: #2e7d32;
+  }
+  body {
+    font-family: 'Segoe UI', sans-serif;
+    background: var(--bg-color);
+    color: var(--text-color);
+    margin: 0;
+    padding: 20px;
+    min-height: 100vh;
+    box-sizing: border-box;
+  }
+  h1 {
+    text-align: center;
+    color: var(--primary-color);
+    position: relative;
+    margin-bottom: 15px;
+  }
+  button {
+    cursor: pointer;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 12px;
+  }
+  .reset-btn {
+    background: #d32f2f;
+    color: white;
+    display: block;
+    margin: 10px auto 20px;
+  }
+  .toggle-dark {
+    background: var(--primary-color);
+    color: white;
+    position: absolute;
+    right: 10px;
+    top: 10px;
+  }
+  .progress-container {
+    max-width: 800px;
+    margin: 0 auto 25px;
+    padding: 0 10px;
+  }
+  .progress {
+    height: 20px;
+    background: #ddd;
+    border-radius: 10px;
+    overflow: hidden;
+    margin: 8px 0 4px;
+  }
+  .progress-bar {
+    height: 100%;
+    background: var(--primary-color);
+    width: 0%;
+    transition: width 0.3s ease;
+  }
+  .progress-text {
+    font-weight: 600;
+    text-align: center;
+    color: var(--primary-color);
+    user-select: none;
+  }
+  .days-until {
+    text-align: center;
+    font-size: 1.2em;
+    font-weight: 700;
+    margin-bottom: 15px;
+    color: var(--primary-color);
+    user-select: none;
+  }
+  .schedule {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 15px;
+    max-width: 1200px;
+    margin: 0 auto 30px;
+    padding: 0 10px;
+    box-sizing: border-box;
+  }
+  .day, .notes {
+    background: var(--card-color);
+    border-radius: 8px;
+    padding: 15px;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    display: flex;
+    flex-direction: column;
+  }
+  .day h2, .notes h2 {
+    color: var(--primary-color);
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 4px;
+    margin: 0 0 10px 0;
+  }
+  .task {
+    margin: 8px 0;
+    display: flex;
+    align-items: center;
+    user-select: none;
+  }
+  .task input[type="checkbox"] {
+    margin-right: 10px;
+    transform: scale(1.2);
+    cursor: pointer;
+  }
+  .expand-btn {
+    margin-left: auto;
+    font-weight: bold;
+    cursor: pointer;
+    color: var(--primary-color);
+    user-select: none;
+  }
+  .subtopics {
+    margin-left: 25px;
+    display: none;
+    flex-direction: column;
+  }
+  .subtopics .task {
+    font-size: 0.9em;
+    margin: 4px 0;
+  }
+  /* Notes */
+  .note-input {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 15px;
+    flex-wrap: wrap;
+  }
+  .note-input input {
+    flex: 1 1 200px;
+    padding: 8px;
+    border-radius: 6px;
+    border: 1px solid #ccc;
+    font-size: 1em;
+  }
+  .note-input button {
+    background: var(--primary-color);
+    color: white;
+    flex-shrink: 0;
+    padding: 8px 15px;
+    font-weight: 600;
+  }
+  .note-list {
+    display: grid;
+    gap: 10px;
+  }
+  .note {
+    background: #e3f2fd;
+    padding: 10px 15px;
+    border-radius: 6px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    word-break: break-word;
+  }
+  .note.done {
+    background: var(--done-color);
+    text-decoration: line-through;
+    color: #444;
+  }
+  .note-actions button {
+    background: none;
+    border: none;
+    cursor: pointer;
+    margin-left: 10px;
+    color: var(--primary-color);
+    font-weight: bold;
+    font-size: 1.2em;
+    line-height: 1;
+    padding: 0;
+    user-select: none;
+  }
+  @media (max-width: 600px) {
+    body {
+      padding: 10px;
+    }
+    .schedule {
+      grid-template-columns: 1fr;
+      padding: 0 5px;
+    }
+    .note-input input {
+      flex: 1 1 100%;
+    }
+    .note-input button {
+      width: 100%;
+    }
+  }
+  a{
+  text-decoration: none;
+  text-align-last: center;
+  }
+  .acessar{
+    text-align: center;
+    position: auto;
+    text-align-last: center;
+    color: black;
+    background-color: yellow;
+    border-radius: 10px;
+    padding: 5px;
+  }
+  p{
+    font-size: 10px;
+    text-align-last: center;
+    color: green;
+  }
+</style>
+</head>
+<button class="toggle-dark" onclick="toggleDark()" title="Alternar modo
+  claro/escuro">🌙</button>
+<body>
+  <br>
+<h1>
+  Cronograma Banco do Brasil
+</h1>
+<p>Desenvolvido e hospedado por Arnaldo S. Lima</p>
+<a href="https://drive.google.com/drive/folders/1EfSVVsskNgJCYnATI-EBVEi9NVnvTlGZ"
+<button class="acessar"><b>Acessar Materiais de Apoio</b></button>
+</a>
+<div class="progress-container">
+  <div class="days-until" id="daysUntil"></div>
+  <div class="progress" aria-label="Barra de progresso do cronograma">
+    <div class="progress-bar" id="progressBar"></div>
+  </div>
+  <div class="progress-text" id="progressText" aria-live="polite">0%</div>
+</div>
+
+<button class="reset-btn" onclick="resetChecklist()">Desmarcar todas</button>
+
+<div class="schedule" role="list">
+  <div class="day" role="listitem" aria-label="Segunda-feira">
+    <h2>Segunda</h2>
+    <div class="task"><input type="checkbox" aria-label="Língua Portuguesa">Língua Portuguesa <span class="expand-btn" onclick="toggle(this)" role="button" aria-pressed="false" tabindex="0">＋</span></div>
+    <div class="subtopics" role="list">
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Interpretação de Texto">Interpretação de Texto</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Ortografia">Ortografia</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Acentuação Gráfica">Acentuação Gráfica</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Pontuação">Pontuação</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Crase">Crase</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Concordância">Concordância</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Regência">Regência</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Coesão e Coerência">Coesão e Coerência</div>
+    </div>
+    <div class="task"><input type="checkbox" aria-label="Matemática">Matemática <span class="expand-btn" onclick="toggle(this)" role="button" aria-pressed="false" tabindex="0">＋</span></div>
+    <div class="subtopics" role="list">
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Porcentagem">Porcentagem</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Regra de Três">Regra de Três</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Juros Simples e Compostos">Juros Simples e Compostos</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Equações">Equações</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Problemas Matemáticos">Problemas Matemáticos</div>
+    </div>
+  </div>
+
+  <div class="day" role="listitem" aria-label="Terça-feira">
+    <h2>Terça</h2>
+    <div class="task"><input type="checkbox" aria-label="Raciocínio Lógico">Raciocínio Lógico <span class="expand-btn" onclick="toggle(this)" role="button" aria-pressed="false" tabindex="0">＋</span></div>
+    <div class="subtopics" role="list">
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Lógica Proposicional">Lógica Proposicional</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Diagramas">Diagramas</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Análise Combinatória">Análise Combinatória</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Probabilidade">Probabilidade</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Sequências">Sequências</div>
+    </div>
+    <div class="task"><input type="checkbox" aria-label="Atualidades do Mercado Financeiro">Atualidades do Mercado Financeiro <span class="expand-btn" onclick="toggle(this)" role="button" aria-pressed="false" tabindex="0">＋</span></div>
+    <div class="subtopics" role="list">
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Economia">Economia</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Sistema Financeiro">Sistema Financeiro</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Produtos Bancários">Produtos Bancários</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Inovação Tecnológica">Inovação Tecnológica</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Responsabilidade Social">Responsabilidade Social</div>
+    </div>
+  </div>
+
+  <div class="day" role="listitem" aria-label="Quarta-feira">
+    <h2>Quarta</h2>
+    <div class="task"><input type="checkbox" aria-label="Conhecimentos Bancários">Conhecimentos Bancários <span class="expand-btn" onclick="toggle(this)" role="button" aria-pressed="false" tabindex="0">＋</span></div>
+    <div class="subtopics" role="list">
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Sistema Financeiro Nacional">Sistema Financeiro Nacional</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Banco Central">Banco Central</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Produtos e Serviços">Produtos e Serviços</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Open Finance">Open Finance</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Prevenção à Lavagem de Dinheiro">Prevenção à Lavagem de Dinheiro</div>
+    </div>
+    <div class="task"><input type="checkbox" aria-label="Ética no Serviço Público">Ética no Serviço Público <span class="expand-btn" onclick="toggle(this)" role="button" aria-pressed="false" tabindex="0">＋</span></div>
+    <div class="subtopics" role="list">
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Ética, Moral e Cidadania">Ética, Moral e Cidadania</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Código de Ética do Servidor">Código de Ética do Servidor</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Função Social dos Bancos">Função Social dos Bancos</div>
+    </div>
+  </div>
+
+  <div class="day" role="listitem" aria-label="Quinta-feira">
+    <h2>Quinta</h2>
+    <div class="task"><input type="checkbox" aria-label="Informática">Informática <span class="expand-btn" onclick="toggle(this)" role="button" aria-pressed="false" tabindex="0">＋</span></div>
+    <div class="subtopics" role="list">
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Sistemas Operacionais">Sistemas Operacionais</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Pacote Office">Pacote Office</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Internet e Redes">Internet e Redes</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Segurança da Informação">Segurança da Informação</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Backup e Malware">Backup e Malware</div>
+    </div>
+    <div class="task"><input type="checkbox" aria-label="Redação / Discursiva">Redação / Discursiva <span class="expand-btn" onclick="toggle(this)" role="button" aria-pressed="false" tabindex="0">＋</span></div>
+    <div class="subtopics" role="list">
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Estrutura do Texto">Estrutura do Texto</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Coesão e Coerência">Coesão e Coerência</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Desenvolvimento de Argumentos">Desenvolvimento de Argumentos</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Prática de Temas">Prática de Temas</div>
+    </div>
+  </div>
+
+  <div class="day" role="listitem" aria-label="Sexta-feira">
+    <h2>Sexta</h2>
+    <div class="task"><input type="checkbox" aria-label="Revisão Geral">Revisão Geral <span class="expand-btn" onclick="toggle(this)" role="button" aria-pressed="false" tabindex="0">＋</span></div>
+    <div class="subtopics" role="list">
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Revisar Conteúdos">Revisar Conteúdos</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Rever Anotações">Rever Anotações</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Reforçar Pontos Fracos">Reforçar Pontos Fracos</div>
+    </div>
+    <div class="task"><input type="checkbox" aria-label="Simulados">Simulados <span class="expand-btn" onclick="toggle(this)" role="button" aria-pressed="false" tabindex="0">＋</span></div>
+    <div class="subtopics" role="list">
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Simulado Objetivo">Simulado Objetivo</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Prova Discursiva">Prova Discursiva</div>
+      <div class="task" role="listitem"><input type="checkbox" aria-label="Correção de Erros">Correção de Erros</div>
+    </div>
+  </div>
+</div>
+
+<div class="notes" aria-label="Anotações">
+  <h2>📝 Anotações</h2>
+  <div class="note-input">
+    <input type="text" id="noteText" placeholder="Digite sua anotação..." aria-label="Campo para nova anotação" />
+    <button onclick="addNote()" aria-label="Adicionar anotação">Adicionar</button>
+  </div>
+  <div class="note-list" id="noteList" role="list"></div>
+</div>
+
+<script>
+  const STORAGE_KEY = "cronogramaBB_v3";
+  const NOTES_KEY = "notesBB_v3";
+
+  window.addEventListener("DOMContentLoaded", () => {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    // Restaurar checkboxes
+    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+    if (saved && saved.length === checkboxes.length) {
+      checkboxes.forEach((box, i) => (box.checked = saved[i]));
+    }
+    // Adicionar listeners
+    checkboxes.forEach((box) => {
+      box.addEventListener("change", () => {
+        const state = Array.from(checkboxes).map((cb) => cb.checked);
+        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+        updateProgress();
+      });
+    });
+    loadNotes();
+    updateProgress();
+    updateDaysUntil();
+  });
+
+  function resetChecklist() {
+    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
+    checkboxes.forEach((cb) => (cb.checked = false));
+    localStorage.removeItem(STORAGE_KEY);
+    updateProgress();
+  }
+
+  function toggle(el) {
+    const subtopics = el.parentElement.nextElementSibling;
+    if (!subtopics) return;
+    const expanded = subtopics.style.display === "flex";
+    subtopics.style.display = expanded ? "none" : "flex";
+    el.textContent = expanded ? "＋" : "－";
+    el.setAttribute("aria-pressed", !expanded);
+  }
+
+  function toggleDark() {
+    document.body.classList.toggle("dark");
+  }
+
+  function updateProgress() {
+    const all = document.querySelectorAll('input[type="checkbox"]');
+    const done = Array.from(all).filter((cb) => cb.checked);
+    const percent = all.length ? ((done.length / all.length) * 100).toFixed(0) : 0;
+    const progressBar = document.getElementById("progressBar");
+    const progressText = document.getElementById("progressText");
+    progressBar.style.width = percent + "%";
+    progressText.textContent = percent + "%";
+  }
+
+  // === FUNÇÕES DE ANOTAÇÕES ===
+  let notes = [];
+
+  function loadNotes() {
+    const saved = JSON.parse(localStorage.getItem(NOTES_KEY));
+    if (saved) notes = saved;
+    renderNotes();
+  }
+
+  function saveNotes() {
+    localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
+  }
+
+  function addNote() {
+    const text = document.getElementById("noteText").value.trim();
+    if (!text) return alert("Digite alguma anotação antes de adicionar.");
+    notes.push({ text, done: false });
+    document.getElementById("noteText").value = "";
+    saveNotes();
+    renderNotes();
+  }
+
+  function toggleDone(index) {
+    notes[index].done = !notes[index].done;
+    saveNotes();
+    renderNotes();
+  }
+
+  function deleteNote(index) {
+    if (!confirm("Quer mesmo apagar esta anotação?")) return;
+    notes.splice(index, 1);
+    saveNotes();
+    renderNotes();
+  }
+
+  function editNote(index) {
+    const newText = prompt("Editar anotação:", notes[index].text);
+    if (newText !== null) {
+      notes[index].text = newText.trim();
+      saveNotes();
+      renderNotes();
+    }
+  }
+
+  function renderNotes() {
+    const list = document.getElementById("noteList");
+    list.innerHTML = "";
+    notes.forEach((note, index) => {
+      const div = document.createElement("div");
+      div.className = "note" + (note.done ? " done" : "");
+      div.innerHTML = `
+        <div>${note.text}</div>
+        <div class="note-actions">
+          <button onclick="toggleDone(${index})" title="Concluir/Desconcluir" aria-label="Concluir ou desconcluir anotação">✔️</button>
+          <button onclick="editNote(${index})" title="Editar" aria-label="Editar anotação">✏️</button>
+          <button onclick="deleteNote(${index})" title="Apagar" aria-label="Apagar anotação">🗑️</button>
+        </div>
+      `;
+      list.appendChild(div);
+    });
+  }
+
+  // === CONTADOR DE DIAS PARA A PROVA ===
+  function updateDaysUntil() {
+    const now = new Date();
+    // Zera as horas para comparação só da data (local)
+    const hoje = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+    const prova = new Date(provaDate.getFullYear(), provaDate.getMonth(), provaDate.getDate());
+
+    const diffTime = prova - hoje; // em ms
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+    const daysUntilElem = document.getElementById("daysUntil");
+
+    if(diffDays > 0) {
+      daysUntilElem.textContent = `Faltam ${diffDays} dia${diffDays > 1 ? "s" : ""} para a prova!`;
+    } else if (diffDays === 0) {
+      daysUntilElem.textContent = "Hoje é o dia da prova! Boa sorte!";
+    } else {
+      daysUntilElem.textContent = "A prova já passou.";
+    }
+  }
+</script>
+
+</body>
+  </html>
+        
