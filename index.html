@@ -1,491 +1,489 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-<meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>Cronograma Banco do Brasil</title>
-<style>
-  :root {
-    --bg-color: #f1f8ff;
-    --text-color: #000;
-    --card-color: #fff;
-    --primary-color: #1565c0;
-    --done-color: #c8e6c9;
-  }
-  body.dark {
-    --bg-color: #121212;
-    --text-color: #eee;
-    --card-color: #1e1e1e;
-    --primary-color: #90caf9;
-    --done-color: #2e7d32;
-  }
-  body {
-    font-family: 'Segoe UI', sans-serif;
-    background: var(--bg-color);
-    color: var(--text-color);
-    margin: 0;
-    padding: 20px;
-    min-height: 100vh;
-    box-sizing: border-box;
-  }
-  h1 {
-    text-align: center;
-    color: var(--primary-color);
-    position: relative;
-    margin-bottom: 15px;
-  }
-  button {
-    cursor: pointer;
-    border: none;
-    border-radius: 6px;
-    padding: 8px 12px;
-  }
-  .reset-btn {
-    background: #d32f2f;
-    color: white;
-    display: block;
-    margin: 10px auto 20px;
-  }
-  .toggle-dark {
-    background: var(--primary-color);
-    color: white;
-    position: absolute;
-    right: 10px;
-    top: 10px;
-  }
-  .progress-container {
-    max-width: 800px;
-    margin: 0 auto 25px;
-    padding: 0 10px;
-  }
-  .progress {
-    height: 20px;
-    background: #ddd;
-    border-radius: 10px;
-    overflow: hidden;
-    margin: 8px 0 4px;
-  }
-  .progress-bar {
-    height: 100%;
-    background: var(--primary-color);
-    width: 0%;
-    transition: width 0.3s ease;
-  }
-  .progress-text {
-    font-weight: 600;
-    text-align: center;
-    color: var(--primary-color);
-    user-select: none;
-  }
-  .days-until {
-    text-align: center;
-    font-size: 1.2em;
-    font-weight: 700;
-    margin-bottom: 15px;
-    color: var(--primary-color);
-    user-select: none;
-  }
-  .schedule {
-    display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-    gap: 15px;
-    max-width: 1200px;
-    margin: 0 auto 30px;
-    padding: 0 10px;
-    box-sizing: border-box;
-  }
-  .day, .notes {
-    background: var(--card-color);
-    border-radius: 8px;
-    padding: 15px;
-    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
-    display: flex;
-    flex-direction: column;
-  }
-  .day h2, .notes h2 {
-    color: var(--primary-color);
-    border-bottom: 1px solid #ddd;
-    padding-bottom: 4px;
-    margin: 0 0 10px 0;
-  }
-  .task {
-    margin: 8px 0;
-    display: flex;
-    align-items: center;
-    user-select: none;
-  }
-  .task input[type="checkbox"] {
-    margin-right: 10px;
-    transform: scale(1.2);
-    cursor: pointer;
-  }
-  .expand-btn {
-    margin-left: auto;
-    font-weight: bold;
-    cursor: pointer;
-    color: var(--primary-color);
-    user-select: none;
-  }
-  .subtopics {
-    margin-left: 25px;
-    display: none;
-    flex-direction: column;
-  }
-  .subtopics .task {
-    font-size: 0.9em;
-    margin: 4px 0;
-  }
-  /* Notes */
-  .note-input {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 15px;
-    flex-wrap: wrap;
-  }
-  .note-input input {
-    flex: 1 1 200px;
-    padding: 8px;
-    border-radius: 6px;
-    border: 1px solid #ccc;
-    font-size: 1em;
-  }
-  .note-input button {
-    background: var(--primary-color);
-    color: white;
-    flex-shrink: 0;
-    padding: 8px 15px;
-    font-weight: 600;
-  }
-  .note-list {
-    display: grid;
-    gap: 10px;
-  }
-  .note {
-    background: #e3f2fd;
-    padding: 10px 15px;
-    border-radius: 6px;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    word-break: break-word;
-  }
-  .note.done {
-    background: var(--done-color);
-    text-decoration: line-through;
-    color: #444;
-  }
-  .note-actions button {
-    background: none;
-    border: none;
-    cursor: pointer;
-    margin-left: 10px;
-    color: var(--primary-color);
-    font-weight: bold;
-    font-size: 1.2em;
-    line-height: 1;
-    padding: 0;
-    user-select: none;
-  }
-  @media (max-width: 600px) {
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <link rel="icon" href="img/ico.jpg" type="image/x-icon">
+  <title>BB 2025</title>
+  <style>
+    :root {
+      --green: #d7d700e4;
+      --green-hover: #0202cb;
+    }
+
+    * { box-sizing: border-box; }
+
     body {
-      padding: 10px;
+      margin: 0;
+      background: #121212;
+      color: black;
+      font-family: 'Segoe UI', Tahoma, sans-serif;
+      overflow-x: hidden;
     }
-    .schedule {
-      grid-template-columns: 1fr;
-      padding: 0 5px;
+    
+    .perfil{
+      width: 60px;
+      border-radius: 50%;
+      border: 2px yellow solid;
     }
-    .note-input input {
-      flex: 1 1 100%;
+    .perfil img{
+      border-color: red;
     }
-    .note-input button {
+    .menu-toggle {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: var(--green);
+      border: none;
+      border-radius: 4px;
+      width: 40px;
+      height: 40px;
+      cursor: pointer;
+      z-index: 1001;
+    }
+
+    .menu-toggle span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background: #fff;
+      margin: 5px auto;
+    }
+
+    aside {
+      background: #181818;
+      width: 250px;
+      height: 100vh;
+      position: fixed;
+      left: -250px;
+      top: 0;
+      transition: left 0.3s ease;
+      z-index: 1000;
+      padding: 20px;
+    }
+
+    aside.show { left: 0; }
+
+    aside h2 {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+    }
+
+    aside ul { list-style: none; padding: 0; }
+    aside li { margin-bottom: 15px; cursor: pointer; color: #bbb; }
+    aside li:hover { color: var(--green); }
+    aside .btn { margin-top: 30px; }
+    li :hover{
+      color: green;
+    }
+
+    .overlay {
+      display: none;
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      background: rgba(0,0,0,0.5);
+      z-index: 999;
+    }
+    .overlay.show { display: block; }
+
+    main {
+      padding: 80px 20px 40px 20px;
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 30px;
+    }
+
+    .player {
+      background: #181818;
+      border-radius: 16px;
+      padding: 20px;
+      text-align: center;
+      box-shadow: 0 5px 20px rgba(0,0,0,0.5);
+      position: relative;
+    }
+
+    .cover-wrapper { position: relative; }
+    .cover {
       width: 100%;
+      border-radius: 10px;
+      margin-bottom: 15px;
     }
-  }
-  a{
-  text-decoration: none;
-  text-align-last: center;
-  }
-  .acessar{
-    text-align: center;
-    position: auto;
-    text-align-last: center;
-    color: black;
-    background-color: yellow;
-    border-radius: 10px;
-    padding: 5px;
-  }
-  p{
-    font-size: 10px;
-    text-align-last: center;
-    color: green;
-  }
-</style>
+
+    .logo-overlay {
+      position: absolute;
+      bottom: 10px;
+      right: 10px;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      background: #fff;
+      background-image: url('https://upload.wikimedia.org/wikipedia/commons/thumb/5/52/Banco_do_Brasil_logo.svg/512px-Banco_do_Brasil_logo.svg.png');
+      background-size: cover;
+      background-position: center;
+      border: 2px solid var(--green);
+    }
+
+    .title { font-size: 1rem; margin-bottom: 5px;
+    color: white;}
+    .author { font-size: 0.8rem; color: white; margin-bottom: 15px; }
+
+    .progress {
+      width: 100%;
+      height: 5px;
+      background: #333;
+      border-radius: 5px;
+      margin: 15px 0;
+      position: relative;
+    }
+
+    .progress-filled {
+      height: 100%;
+      background: var(--green);
+      width: 0%;
+      border-radius: 5px;
+    }
+
+    .controls {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+    }
+
+    .btn {
+      background: var(--green);
+      border: none;
+      border-radius: 50%;
+      width: 45px;
+      height: 45px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+    }
+    h3{
+      text-align: center;
+      padding-top: 15px;
+    }
+    p{
+      font-size: 12px;
+      color: yellow;
+    }
+    .btn:hover { background: var(--green-hover); }
+    .btn svg { fill: #fff; width: 20px; height: 20px; }
+
+    @media (max-width: 768px) {
+      main { grid-template-columns: 1fr; }
+    }
+    .tudo{
+      padding-left: 53%;
+      text-align: center;
+    }
+    .motivacao{
+      width: 360px;
+    }
+    h2, h3{
+      color: white;
+    }
+    h1{
+      color: white;
+      font-family: Times New Roman;
+      text-align: center;
+    }
+    .mot:hover{
+      color: red;
+      font-size: 30px;
+    }
+    .dest{
+      color: yellow;
+    }
+    .dest:hover{
+      color: blue;
+    }
+  </style>
 </head>
-<button class="toggle-dark" onclick="toggleDark()" title="Alternar modo
-  claro/escuro">🌙</button>
 <body>
-  <br>
-<h1>
-  Cronograma Banco do Brasil
-</h1>
-<p>Desenvolvido e hospedado por Arnaldo S. Lima</p>
-<a href="https://drive.google.com/drive/folders/1EfSVVsskNgJCYnATI-EBVEi9NVnvTlGZ"
-<button class="acessar"><b>Acessar Materiais de Apoio</b></button>
-</a>
-<div class="progress-container">
-  <div class="days-until" id="daysUntil"></div>
-  <div class="progress" aria-label="Barra de progresso do cronograma">
-    <div class="progress-bar" id="progressBar"></div>
-  </div>
-  <div class="progress-text" id="progressText" aria-live="polite">0%</div>
-</div>
+<h3><b>Gerenciador de Estudos</b><br><b>Banco do Brasil</b></h3>
+  <button class="menu-toggle" onclick="toggleMenu()">
+    <span></span><span></span><span></span>
+  </button>
 
-<button class="reset-btn" onclick="resetChecklist()">Desmarcar todas</button>
+  <div class="overlay" onclick="toggleMenu()"></div>
+  <aside id="sidebar">
+    <br>
+    <br>
+    <br>
+        <img class="perfil" src = 'logobb1.jpg'>
+    <img class="perfil" src = 'logobb2.jpg'>
+    <img onclick="playAll()" class="perfil" src =
+    'tudo4.jpg'>
+    <p onclick="playAll()" class="tudo"><b>Reproduzir</b><br><b>Tudo</b></p>
+    
+    <br>
+    <h2 onclick="cronograma()">🗓️ Cronograma</h2>
+    <h2 onclick="videoAula()">️📚 Video Aulas</h2>
+    <h2>🎧 Resumo em Áudio</h2>
+    <ul>
+      <li onclick="playByIndex(0)">🟡Sistema Financeiro Nacional</li>
+      <li onclick="playByIndex(1)">🟡Produtos Bancários</li>
+      <li onclick="playByIndex(2)">🟡Mercado de Câmbio e Capitais</li>
+      <li onclick="playByIndex(3)">🟡Sistema de Pagamentos</li>
+      <li onclick="playByIndex(4)">🟡Orçamento e Dívida Pública</li>
+      <li onclick="playByIndex(5)">🟡Mercados Monetário, Crédito e Capitais</li>
+      <li onclick="playByIndex(6)">🟡Mercado Cambial e Política Monetária</li>
+      <li onclick="playByIndex(7)">🟡Moeda e Política Monetária</li>
 
-<div class="schedule" role="list">
-  <div class="day" role="listitem" aria-label="Segunda-feira">
-    <h2>Segunda</h2>
-    <div class="task"><input type="checkbox" aria-label="Língua Portuguesa">Língua Portuguesa <span class="expand-btn" onclick="toggle(this)" role="button" aria-pressed="false" tabindex="0">＋</span></div>
-    <div class="subtopics" role="list">
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Interpretação de Texto">Interpretação de Texto</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Ortografia">Ortografia</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Acentuação Gráfica">Acentuação Gráfica</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Pontuação">Pontuação</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Crase">Crase</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Concordância">Concordância</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Regência">Regência</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Coesão e Coerência">Coesão e Coerência</div>
+    </ul>
+<br>
+<br>
+<br><p><i>Desenvolvido por Arnaldo
+    S. Lima</i></p>
+  </aside>
+<h1 class="mot">Decisões, Decidem</h1>
+<h1 class="dest"><b><i>Destinos</i></b>.</h1>
+  <main>
+    <div class="player">
+      <div class="cover-wrapper">
+        <img onclick="playAll()" class="cover" src="logobb1.jpg" alt="Capa Podcast">
+        <div class="logo-overlay"></div>
+      </div>
+      <div class="title">Sistema Financeiro Nacional</div>
+      <div class="author">Arnaldo S. Lima</div>
+      <div class="progress"><div class="progress-filled"></div></div>
+      <div class="controls">
+        <button class="btn play-btn" data-state="play">
+          <svg viewBox="0 0 24 24" class="icon">
+            <polygon points="5,3 19,12 5,21" />
+          </svg>
+        </button>
+        <button class="btn repeat-btn">🔁</button>
+      </div>
+      
+      <audio>
+        <source src="https://dl.dropbox.com/scl/fi/gq3zlwz15gupf3tyz7nus/The-National-Financial-System-of-Brazil.wav?rlkey=wcoiwnsugs42qggws0cny71fi&st=i6di8j3n&dl=0" type="audio/wav">
+      </audio>
     </div>
-    <div class="task"><input type="checkbox" aria-label="Matemática">Matemática <span class="expand-btn" onclick="toggle(this)" role="button" aria-pressed="false" tabindex="0">＋</span></div>
-    <div class="subtopics" role="list">
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Porcentagem">Porcentagem</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Regra de Três">Regra de Três</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Juros Simples e Compostos">Juros Simples e Compostos</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Equações">Equações</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Problemas Matemáticos">Problemas Matemáticos</div>
-    </div>
-  </div>
 
-  <div class="day" role="listitem" aria-label="Terça-feira">
-    <h2>Terça</h2>
-    <div class="task"><input type="checkbox" aria-label="Raciocínio Lógico">Raciocínio Lógico <span class="expand-btn" onclick="toggle(this)" role="button" aria-pressed="false" tabindex="0">＋</span></div>
-    <div class="subtopics" role="list">
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Lógica Proposicional">Lógica Proposicional</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Diagramas">Diagramas</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Análise Combinatória">Análise Combinatória</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Probabilidade">Probabilidade</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Sequências">Sequências</div>
+    <div class="player">
+      <div class="cover-wrapper">
+        <img class="cover" src="logobb1.jpg">
+        <div class="logo-overlay"></div>
+      </div>
+      <div class="title">Produtos Bancários</div>
+      <div class="author">Arnaldo S. Lima</div>
+      <div class="progress"><div class="progress-filled"></div></div>
+      <div class="controls">
+        <button class="btn play-btn" data-state="play">
+          <svg viewBox="0 0 24 24" class="icon">
+            <polygon points="5,3 19,12 5,21" />
+          </svg>
+        </button>
+        <button class="btn repeat-btn">🔁</button>
+      </div>
+      <audio>
+        <source src="https://dl.dropbox.com/scl/fi/7ecj0qmscisvlb75rdeo8/Produtos-Banc-rios-e-Previd-ncia_-Uma-An-lise-Abrangente.wav?rlkey=21gq1bz270pxueo9wr5iwwwel&st=uw7y0mkr&dl=0" type="audio/wav">
+      </audio>
     </div>
-    <div class="task"><input type="checkbox" aria-label="Atualidades do Mercado Financeiro">Atualidades do Mercado Financeiro <span class="expand-btn" onclick="toggle(this)" role="button" aria-pressed="false" tabindex="0">＋</span></div>
-    <div class="subtopics" role="list">
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Economia">Economia</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Sistema Financeiro">Sistema Financeiro</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Produtos Bancários">Produtos Bancários</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Inovação Tecnológica">Inovação Tecnológica</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Responsabilidade Social">Responsabilidade Social</div>
+    <div class="player">
+      <div class="cover-wrapper">
+        <img class="cover" src="logobb1.jpg" alt="Capa Podcast">
+        <div class="logo-overlay"></div>
+      </div>
+      <div class="title">Mercado de Câmbio e Capitais</div>
+      <div class="author">Arnaldo S. Lima</div>
+      <div class="progress"><div class="progress-filled"></div></div>
+      <div class="controls">
+        <button class="btn play-btn" data-state="play">
+          <svg viewBox="0 0 24 24" class="icon">
+            <polygon points="5,3 19,12 5,21" />
+          </svg>
+        </button>
+        <button class="btn repeat-btn">🔁</button>
+      </div>
+      <audio>
+        <source src="https://dl.dropbox.com/scl/fi/jpiz1a9i4x73acgftzmhm/Capital-and-Foreign-Exchange-Markets.wav?rlkey=slc3o00k4m6o0bpi8szoyi590&st=ikfea0qa&dl=0" type="audio/wav">
+      </audio>
     </div>
-  </div>
 
-  <div class="day" role="listitem" aria-label="Quarta-feira">
-    <h2>Quarta</h2>
-    <div class="task"><input type="checkbox" aria-label="Conhecimentos Bancários">Conhecimentos Bancários <span class="expand-btn" onclick="toggle(this)" role="button" aria-pressed="false" tabindex="0">＋</span></div>
-    <div class="subtopics" role="list">
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Sistema Financeiro Nacional">Sistema Financeiro Nacional</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Banco Central">Banco Central</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Produtos e Serviços">Produtos e Serviços</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Open Finance">Open Finance</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Prevenção à Lavagem de Dinheiro">Prevenção à Lavagem de Dinheiro</div>
+   <div class="player">
+      <div class="cover-wrapper">
+        <img onclick="playAll()" class="cover" src="logobb1.jpg" alt="Capa Podcast">
+        <div class="logo-overlay"></div>
+      </div>
+      <div class="title">Sistema de Pagamentos</div>
+      <div class="author">Arnaldo S. Lima</div>
+      <div class="progress"><div class="progress-filled"></div></div>
+      <div class="controls">
+        <button class="btn play-btn" data-state="play">
+          <svg viewBox="0 0 24 24" class="icon">
+            <polygon points="5,3 19,12 5,21" />
+          </svg>
+        </button>
+        <button class="btn repeat-btn">🔁</button>
+      </div>
+      <audio>
+        <source src="https://dl.dropbox.com/scl/fi/1kjx6f2dke0xpgfqf5j42/Brazilian-Payment-System_-Mechanics-and-Operations.wav?rlkey=osrgmjxcxapjl3wqreay8684f&st=gzxbk2w2&dl=0" type="audio/wav">
+      </audio>
     </div>
-    <div class="task"><input type="checkbox" aria-label="Ética no Serviço Público">Ética no Serviço Público <span class="expand-btn" onclick="toggle(this)" role="button" aria-pressed="false" tabindex="0">＋</span></div>
-    <div class="subtopics" role="list">
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Ética, Moral e Cidadania">Ética, Moral e Cidadania</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Código de Ética do Servidor">Código de Ética do Servidor</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Função Social dos Bancos">Função Social dos Bancos</div>
+  
+     <div class="player">
+      <div class="cover-wrapper">
+        <img onclick="playAll()" class="cover" src="logobb1.jpg" alt="Capa Podcast">
+        <div class="logo-overlay"></div>
+      </div>
+      <div class="title">Orçamento e Dívida Pública</div>
+      <div class="author">Arnaldo S. Lima</div>
+      <div class="progress"><div class="progress-filled"></div></div>
+      <div class="controls">
+        <button class="btn play-btn" data-state="play">
+          <svg viewBox="0 0 24 24" class="icon">
+            <polygon points="5,3 19,12 5,21" />
+          </svg>
+        </button>
+        <button class="btn repeat-btn">🔁</button>
+      </div>
+      <audio>
+        <source src="https://dl.dropbox.com/scl/fi/qu2mswz0upxov2ukdt7ml/Public-Budget-and-Debt-Management-in-Brazil.wav?rlkey=4n2f2zq393nvch2h0nzz3t8ip&st=16xj38ix&dl=0" type="audio/wav">
+      </audio>
     </div>
-  </div>
+    
+         <div class="player">
+      <div class="cover-wrapper">
+        <img onclick="playAll()" class="cover" src="logobb1.jpg" alt="Capa Podcast">
+        <div class="logo-overlay"></div>
+      </div>
+      <div class="title">Mercados Monetário, Crédito e Capitais</div>
+      <div class="author">Arnaldo S. Lima</div>
+      <div class="progress"><div class="progress-filled"></div></div>
+      <div class="controls">
+        <button class="btn play-btn" data-state="play">
+          <svg viewBox="0 0 24 24" class="icon">
+            <polygon points="5,3 19,12 5,21" />
+          </svg>
+        </button>
+        <button class="btn repeat-btn">🔁</button>
+      </div>
+      <audio>
+        <source src="https://dl.dropbox.com/scl/fi/q90xtjw3xo51i9l3nnxn4/Markets-of-Money-Credit-and-Capital.wav?rlkey=r84wo8k6otqprmbidnvlmoakd&st=zabgmv70&dl=0" type="audio/wav">
+      </audio>
+    </div>
+    
+      <div class="player">
+      <div class="cover-wrapper">
+        <img onclick="playAll()" class="cover" src="logobb1.jpg" alt="Capa Podcast">
+        <div class="logo-overlay"></div>
+      </div>
+      <div class="title">Mercado Monetário e Política Cambial</div>
+      <div class="author">Arnaldo S. Lima</div>
+      <div class="progress"><div class="progress-filled"></div></div>
+      <div class="controls">
+        <button class="btn play-btn" data-state="play">
+          <svg viewBox="0 0 24 24" class="icon">
+            <polygon points="5,3 19,12 5,21" />
+          </svg>
+        </button>
+        <button class="btn repeat-btn">🔁</button>
+      </div>
+      <audio>
+        <source src="https://dl.dropbox.com/scl/fi/hhh6hpg1hghtk96d7qjml/Mercado-Cambial-e-Pol-tica-Monet-ria_-Fundamentos-e-Aplica-es.wav?rlkey=dn7uwqk0is6fa6sjqm97l2uye&st=7my78b87&dl=0">
+      </audio>
+    </div>
+    
+    <div class="player">
+      <div class="cover-wrapper">
+        <img onclick="playAll()" class="cover" src="logobb1.jpg" alt="Capa Podcast">
+        <div class="logo-overlay"></div>
+      </div>
+      <div class="title">Moeda e Política Monetária</div>
+      <div class="author">Arnaldo S. Lima</div>
+      <div class="progress"><div class="progress-filled"></div></div>
+      <div class="controls">
+        <button class="btn play-btn" data-state="play">
+          <svg viewBox="0 0 24 24" class="icon">
+            <polygon points="5,3 19,12 5,21" />
+          </svg>
+        </button>
+        <button class="btn repeat-btn">🔁</button>
+      </div>
+      <audio>
+        <source src="https://dl.dropbox.com/scl/fi/40sty60hnby4m9xu1yxfo/Moeda-e-Pol-tica-Monet-ria.wav?rlkey=5icrrketg30naidit7vq4bcck&st=6bbpjc3y&dl=0">
+      </audio>
+    </div>
+  </main>
 
-  <div class="day" role="listitem" aria-label="Quinta-feira">
-    <h2>Quinta</h2>
-    <div class="task"><input type="checkbox" aria-label="Informática">Informática <span class="expand-btn" onclick="toggle(this)" role="button" aria-pressed="false" tabindex="0">＋</span></div>
-    <div class="subtopics" role="list">
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Sistemas Operacionais">Sistemas Operacionais</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Pacote Office">Pacote Office</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Internet e Redes">Internet e Redes</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Segurança da Informação">Segurança da Informação</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Backup e Malware">Backup e Malware</div>
-    </div>
-    <div class="task"><input type="checkbox" aria-label="Redação / Discursiva">Redação / Discursiva <span class="expand-btn" onclick="toggle(this)" role="button" aria-pressed="false" tabindex="0">＋</span></div>
-    <div class="subtopics" role="list">
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Estrutura do Texto">Estrutura do Texto</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Coesão e Coerência">Coesão e Coerência</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Desenvolvimento de Argumentos">Desenvolvimento de Argumentos</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Prática de Temas">Prática de Temas</div>
-    </div>
-  </div>
+  <script>
+    const players = document.querySelectorAll('.player');
+    let currentIndex = 0;
 
-  <div class="day" role="listitem" aria-label="Sexta-feira">
-    <h2>Sexta</h2>
-    <div class="task"><input type="checkbox" aria-label="Revisão Geral">Revisão Geral <span class="expand-btn" onclick="toggle(this)" role="button" aria-pressed="false" tabindex="0">＋</span></div>
-    <div class="subtopics" role="list">
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Revisar Conteúdos">Revisar Conteúdos</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Rever Anotações">Rever Anotações</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Reforçar Pontos Fracos">Reforçar Pontos Fracos</div>
-    </div>
-    <div class="task"><input type="checkbox" aria-label="Simulados">Simulados <span class="expand-btn" onclick="toggle(this)" role="button" aria-pressed="false" tabindex="0">＋</span></div>
-    <div class="subtopics" role="list">
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Simulado Objetivo">Simulado Objetivo</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Prova Discursiva">Prova Discursiva</div>
-      <div class="task" role="listitem"><input type="checkbox" aria-label="Correção de Erros">Correção de Erros</div>
-    </div>
-  </div>
-</div>
+    players.forEach((player, index) => {
+      const audio = player.querySelector('audio');
+      const playBtn = player.querySelector('.play-btn');
+      const icon = playBtn.querySelector('polygon');
+      const repeatBtn = player.querySelector('.repeat-btn');
+      const progress = player.querySelector('.progress-filled');
 
-<div class="notes" aria-label="Anotações">
-  <h2>📝 Anotações</h2>
-  <div class="note-input">
-    <input type="text" id="noteText" placeholder="Digite sua anotação..." aria-label="Campo para nova anotação" />
-    <button onclick="addNote()" aria-label="Adicionar anotação">Adicionar</button>
-  </div>
-  <div class="note-list" id="noteList" role="list"></div>
-</div>
+      let repeat = false;
 
-<script>
-  const STORAGE_KEY = "cronogramaBB_v3";
-  const NOTES_KEY = "notesBB_v3";
+      playBtn.onclick = () => {
+        if (audio.paused) {
+          pauseAll();
+          audio.play();
+        } else {
+          audio.pause();
+        }
+      };
 
-  window.addEventListener("DOMContentLoaded", () => {
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    // Restaurar checkboxes
-    const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-    if (saved && saved.length === checkboxes.length) {
-      checkboxes.forEach((box, i) => (box.checked = saved[i]));
-    }
-    // Adicionar listeners
-    checkboxes.forEach((box) => {
-      box.addEventListener("change", () => {
-        const state = Array.from(checkboxes).map((cb) => cb.checked);
-        localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
-        updateProgress();
-      });
+      audio.onplay = () => { icon.setAttribute('points', '6,4 6,20 10,20 10,4 14,4 14,20 18,20 18,4'); };
+      audio.onpause = () => { icon.setAttribute('points', '5,3 19,12 5,21'); };
+      audio.ontimeupdate = () => { progress.style.width = (audio.currentTime / audio.duration) * 100 + '%'; };
+
+      repeatBtn.onclick = () => {
+        repeat = !repeat;
+        audio.loop = repeat;
+        repeatBtn.style.background = repeat ? 'var(--green-hover)' : 'var(--green)';
+      };
+
+      audio.onended = () => {
+        if (!repeat) playNext();
+      };
     });
-    loadNotes();
-    updateProgress();
-    updateDaysUntil();
-  });
 
-  function resetChecklist() {
-    const checkboxes = document.querySelectorAll('input[type="checkbox"]');
-    checkboxes.forEach((cb) => (cb.checked = false));
-    localStorage.removeItem(STORAGE_KEY);
-    updateProgress();
-  }
-
-  function toggle(el) {
-    const subtopics = el.parentElement.nextElementSibling;
-    if (!subtopics) return;
-    const expanded = subtopics.style.display === "flex";
-    subtopics.style.display = expanded ? "none" : "flex";
-    el.textContent = expanded ? "＋" : "－";
-    el.setAttribute("aria-pressed", !expanded);
-  }
-
-  function toggleDark() {
-    document.body.classList.toggle("dark");
-  }
-
-  function updateProgress() {
-    const all = document.querySelectorAll('input[type="checkbox"]');
-    const done = Array.from(all).filter((cb) => cb.checked);
-    const percent = all.length ? ((done.length / all.length) * 100).toFixed(0) : 0;
-    const progressBar = document.getElementById("progressBar");
-    const progressText = document.getElementById("progressText");
-    progressBar.style.width = percent + "%";
-    progressText.textContent = percent + "%";
-  }
-
-  // === FUNÇÕES DE ANOTAÇÕES ===
-  let notes = [];
-
-  function loadNotes() {
-    const saved = JSON.parse(localStorage.getItem(NOTES_KEY));
-    if (saved) notes = saved;
-    renderNotes();
-  }
-
-  function saveNotes() {
-    localStorage.setItem(NOTES_KEY, JSON.stringify(notes));
-  }
-
-  function addNote() {
-    const text = document.getElementById("noteText").value.trim();
-    if (!text) return alert("Digite alguma anotação antes de adicionar.");
-    notes.push({ text, done: false });
-    document.getElementById("noteText").value = "";
-    saveNotes();
-    renderNotes();
-  }
-
-  function toggleDone(index) {
-    notes[index].done = !notes[index].done;
-    saveNotes();
-    renderNotes();
-  }
-
-  function deleteNote(index) {
-    if (!confirm("Quer mesmo apagar esta anotação?")) return;
-    notes.splice(index, 1);
-    saveNotes();
-    renderNotes();
-  }
-
-  function editNote(index) {
-    const newText = prompt("Editar anotação:", notes[index].text);
-    if (newText !== null) {
-      notes[index].text = newText.trim();
-      saveNotes();
-      renderNotes();
+    function pauseAll() { players.forEach(p => p.querySelector('audio').pause()); }
+    function playNext() {
+      if (currentIndex < players.length - 1) {
+        currentIndex++;
+        pauseAll();
+        players[currentIndex].querySelector('audio').play();
+      }
     }
-  }
-
-  function renderNotes() {
-    const list = document.getElementById("noteList");
-    list.innerHTML = "";
-    notes.forEach((note, index) => {
-      const div = document.createElement("div");
-      div.className = "note" + (note.done ? " done" : "");
-      div.innerHTML = `
-        <div>${note.text}</div>
-        <div class="note-actions">
-          <button onclick="toggleDone(${index})" title="Concluir/Desconcluir" aria-label="Concluir ou desconcluir anotação">✔️</button>
-          <button onclick="editNote(${index})" title="Editar" aria-label="Editar anotação">✏️</button>
-          <button onclick="deleteNote(${index})" title="Apagar" aria-label="Apagar anotação">🗑️</button>
-        </div>
-      `;
-      list.appendChild(div);
-    });
-  }
-
-  // === CONTADOR DE DIAS PARA A PROVA ===
-  function updateDaysUntil() {
-    const now = new Date();
-    // Zera as horas para comparação só da data (local)
-    const hoje = new Date(now.getFullYear(), now.getMonth(), now.getDate());
-    const prova = new Date(provaDate.getFullYear(), provaDate.getMonth(), provaDate.getDate());
-
-    const diffTime = prova - hoje; // em ms
-    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
-    const daysUntilElem = document.getElementById("daysUntil");
-
-    if(diffDays > 0) {
-      daysUntilElem.textContent = `Faltam ${diffDays} dia${diffDays > 1 ? "s" : ""} para a prova!`;
-    } else if (diffDays === 0) {
-      daysUntilElem.textContent = "Hoje é o dia da prova! Boa sorte!";
-    } else {
-      daysUntilElem.textContent = "A prova já passou.";
+    function playAll() {
+      currentIndex = 0;
+      pauseAll();
+      players[0].querySelector('audio').play();
     }
-  }
-</script>
+    function playByIndex(i) {
+      currentIndex = i;
+      pauseAll();
+      players[i].querySelector('audio').play();
+      toggleMenu();
+    }
 
+    function toggleMenu() {
+      document.getElementById('sidebar').classList.toggle('show');
+      document.querySelector('.overlay').classList.toggle('show');
+    }
+    
+    function selecionar(elemento) {
+  document.querySelectorAll('li').forEach(el => el.classList.remove('playAll'));
+  elemento.classList.add('playAll');
+}
+function cronograma() {
+  window.open('https://atec7.github.io/Banco-do-Brasil-BB-/', '_blank');
+}
+
+function videoAula() {
+  alert('⏲️EM DESENVOLVIMENTO...')
+}
+  </script>
 </body>
-  </html>
-        
+</html>
